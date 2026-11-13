@@ -1,0 +1,10 @@
+# Default config for temperatures.py: TemperaturesConfig's own defaults, nothing
+# rig-specific. Everything is overridable on the CLI, e.g.
+#
+#   ./src/lewam/scripts/b601/temperatures.sh
+#   ./src/lewam/scripts/b601/temperatures.sh watch=true interval=5
+#   ./src/lewam/scripts/b601/temperatures.sh watch=true duration=600
+
+defaults:
+  - temperatures_schema
+  - _self_

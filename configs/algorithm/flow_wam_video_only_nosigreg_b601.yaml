@@ -1,0 +1,17 @@
+# Video-only WAM without sigreg on the video latents: action + future video latent
+# prediction only -- isolates the future-prediction objective from the regularizer.
+defaults:
+  - flow_wam_video_only_b601
+  - _self_
+
+# `losses:` replaces the inherited list wholesale: the common's list minus its two
+# sigreg terms
+losses:
+  - {type: flow, stream: action, weight: 1.0}
+  - {type: flow, stream: scene_future, weight: 1.0}
+  - {type: flow, stream: wrist_future, weight: 1.0}
+  # observed / eval only (weight 0.0)
+  - {type: integration, stream: action, weight: 0.0, norm: mse}
+  - {type: integration, stream: scene_future, weight: 0.0, norm: mse}
+  - {type: integration, stream: wrist_future, weight: 0.0, norm: mse}
+  - {type: integration, stream: action, weight: 0.0, norm: mse, units: raw}

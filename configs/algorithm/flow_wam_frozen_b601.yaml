@@ -1,0 +1,7 @@
+defaults:
+  - flow_wam_b601
+  - _self_
+
+encoders:
+  vjepa:
+    frozen: true

@@ -1,0 +1,27 @@
+# @package _global_
+# pixel-decoder probe of a trained PnP-T frozen-encoder MoT MSE selfwam arm; pass the
+# checkpoint via `experiment.encoder_init=<run id | model.pt>`
+defaults:
+  - override /dataset: b601_pnpt
+  - override /experiment: decoder
+  - override /algorithm: decode_selfwam_mot_mse_frozen_b601
+  - override /eval: reconstruction
+
+# no augmentation: a probe compares a reconstruction against the frame it came from, and a
+# random crop between the two is a difference that means nothing
+dataset:
+  augment: null
+
+subsample_streams:
+  "observation.images.*": {every: 3}
+
+# frozen root + no augmentation: one cached draw skips the ViT forward entirely
+cache_encodings:
+  augmentation_draws: 1
+  store_on: auto
+  disk_path: /tmp/lewam_enc_cache
+
+eval:
+  # extra panel per stream: 3 consecutive windows (3.6 s), each conditioned on the
+  # previous window's predicted latents and state
+  ar_windows: 3

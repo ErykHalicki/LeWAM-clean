@@ -1,0 +1,14 @@
+defaults:
+  - lerobot_base
+  - _self_
+
+repo_id: lerobot/pusht
+image_size: [96, 96]
+# serves the canonical `observation.images.pixels` the swm eval env also exposes
+columns:
+  observation.images.pixels: observation.image
+
+normalize:
+  keys: [action]
+  method: percentile
+  percentiles: [1, 99]

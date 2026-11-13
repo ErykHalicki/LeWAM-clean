@@ -1,0 +1,12 @@
+backend: swm
+hf_repo: MinghaoFu/lewm-official-data
+name: pusht_expert_train
+image_size: null
+frameskip: 5
+
+conditioning: ${algorithm.conditioning}
+predict: ${algorithm.predict}
+
+normalize:
+  keys: [action, observation.state, observation.env_state]
+  method: mean_std

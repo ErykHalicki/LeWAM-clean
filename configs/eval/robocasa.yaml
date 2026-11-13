@@ -1,0 +1,28 @@
+backend: robocasa
+
+tasks: ${dataset.tasks}
+
+episodes: 20
+
+num_envs: 8              # 1 rolls out serially, and is the only option behind `server:`
+
+max_episode_steps: 600
+
+execute_len: null
+num_flow_steps: null
+cfg_scale: null
+
+# raw simulator names; the dataset records them under observation.images.<name>
+cameras: null
+cameras_raw: null
+render_size: 256
+
+max_videos: 2
+video_stride: 4
+
+holdout: true
+dataset: ${dataset}      # required by holdout, which scores dataset.validation_split
+batch_size: 32
+max_batches: 50
+num_workers: 4
+seed: 0

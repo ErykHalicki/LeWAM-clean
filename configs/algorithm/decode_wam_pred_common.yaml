@@ -1,0 +1,36 @@
+# an overlay, not a standalone arm: compose it after the wam arm whose latents it decodes,
+#   defaults: [flow_wam_b601, decode_wam_pred_common, _self_]
+name: wam_decoder
+
+encoders:
+  decode_scene:
+    type: pixel_decoder
+    in_dim: 512            # must equal proj_scene's out_dim
+    tokens_per_step: 1
+    img_size: 256
+    patch_size: 16
+    hidden_dim: 512
+    depth: 4
+    num_heads: 8
+  decode_wrist:
+    type: pixel_decoder
+    in_dim: 512            # must equal proj_wrist's out_dim
+    tokens_per_step: 1
+    img_size: 256
+    patch_size: 16
+    hidden_dim: 512
+    depth: 4
+    num_heads: 8
+
+decode:
+  scene:
+    stream: scene_future
+    decoder: decode_scene
+  wrist:
+    stream: wrist_future
+    decoder: decode_wrist
+
+# replaces the arm's own terms: a flow term here would put gradients into the frozen model
+losses:
+  - {type: prediction, stream: scene, weight: 1.0}
+  - {type: prediction, stream: wrist, weight: 1.0}

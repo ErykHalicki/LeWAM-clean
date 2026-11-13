@@ -1,0 +1,28 @@
+# @package _global_
+defaults:
+  - override /dataset: b601_pnpt
+  - override /algorithm: selfwam_mot_b601
+  - override /eval: holdout
+
+# the integrated endpoint -- the same quantity every arm reports, regardless of its streams
+best_metric: loss/int_action
+best_mode: min
+
+experiment:
+  eval_every: 200
+  max_steps: 20000
+  # unfrozen ViT-B backward through every context frame
+  gradient_checkpointing: true
+
+subsample_streams:
+  "observation.images.*": {every: 3}
+
+cache_encodings: null
+
+# opts out of the torque-only dataset default: full pos+torq state, 14-d
+# (.vel stays dropped). Deliberate -- the pos-in-state arm this comparison needs
+dataset:
+  slices:
+    observation.state: "*.pos, *.torq"
+algorithm:
+  state_dim: 14

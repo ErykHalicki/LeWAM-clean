@@ -1,0 +1,38 @@
+defaults:
+  - flow_wam_b601
+  - _self_
+
+encoders:
+  pool_scene: {out_dim: 256}
+  pool_wrist: {out_dim: 256}
+  proj_scene: {in_dim: 256, out_dim: 256}
+  proj_wrist: {in_dim: 256, out_dim: 256}
+
+conditioning:
+  scene_context: {dim: 256}
+  wrist_context: {dim: 256}
+
+predict:
+  scene_future:
+    dim: 256
+    token_out: {type: mlp, mlp_dim: 512}
+  wrist_future:
+    dim: 256
+    token_out: {type: mlp, mlp_dim: 512}
+
+losses:
+  - {type: flow, stream: action, weight: 1.0}
+  - {type: flow, stream: state_future, weight: 1.0}
+  - {type: flow, stream: scene_future, weight: 2.0}
+  - {type: flow, stream: wrist_future, weight: 2.0}
+  - {type: sigreg, weight: 0.1, statistic: per_timestep, concat: temporal,
+     streams: [scene_context, scene_future]}
+  - {type: sigreg, weight: 0.1, statistic: per_timestep, concat: temporal,
+     streams: [wrist_context, wrist_future]}
+  # observed / eval only (weight 0.0)
+  - {type: integration, stream: action, weight: 0.0, norm: mse}
+  - {type: integration, stream: state_future, weight: 0.0, norm: mse}
+  - {type: integration, stream: scene_future, weight: 0.0, norm: mse}
+  - {type: integration, stream: wrist_future, weight: 0.0, norm: mse}
+  - {type: integration, stream: action, weight: 0.0, norm: mse, units: raw}
+  - {type: integration, stream: state_future, weight: 0.0, norm: mse, units: raw}

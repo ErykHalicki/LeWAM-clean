@@ -1,0 +1,51 @@
+defaults:
+  - flow_common
+  - _self_
+
+predict:
+  scene_future:
+    from: ${algorithm.scene_field}
+    encoder: proj_scene
+    type: flow
+    dim: 512
+    index: "1..3"
+    raw_index: ${algorithm.future_raw_index}
+    fps: ${algorithm.video_fps}
+    grid: [1, 1]
+    block_size: 1
+    token_in:
+      type: mlp
+      mlp_dim: ${algorithm.model.model_dim}
+    token_out:
+      type: mlp
+      mlp_dim: 64
+  wrist_future:
+    from: ${algorithm.wrist_field}
+    encoder: proj_wrist
+    type: flow
+    dim: 512
+    index: "1..3"
+    raw_index: ${algorithm.future_raw_index}
+    fps: ${algorithm.video_fps}
+    grid: [1, 1]
+    block_size: 1
+    token_in:
+      type: mlp
+      mlp_dim: ${algorithm.model.model_dim}
+    token_out:
+      type: mlp
+      mlp_dim: 64
+
+losses:
+  - {type: flow, stream: action, weight: 1.0}
+  - {type: flow, stream: scene_future, weight: 1.0}
+  - {type: flow, stream: wrist_future, weight: 1.0}
+  - {type: sigreg, weight: 0.1, statistic: per_timestep, concat: temporal,
+     streams: [scene_context, scene_future]}
+  - {type: sigreg, weight: 0.1, statistic: per_timestep, concat: temporal,
+     streams: [wrist_context, wrist_future]}
+  # observed / eval only (weight 0.0)
+  - {type: integration, stream: action, weight: 0.0, norm: mse}
+  - {type: integration, stream: scene_future, weight: 0.0, norm: mse}
+  - {type: integration, stream: wrist_future, weight: 0.0, norm: mse}
+  - {type: integration, stream: action, weight: 0.0, norm: mse, units: raw}

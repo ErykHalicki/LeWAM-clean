@@ -1,0 +1,18 @@
+defaults:
+  - flow_policy_pool_frozen_b601
+  - _self_
+
+# ablation off the frozen 1-query default: 16 summary tokens per camera step
+encoders:
+  pool_scene:
+    num_queries: 16
+  pool_wrist:
+    num_queries: 16
+conditioning:
+  scene_context: {grid: [1, 16]}
+  wrist_context: {grid: [1, 16]}
+model:
+  rope:
+    time:  {share: 0.6, period: auto}
+    seq:   {share: 0.2, period: auto}
+    width: {share: 0.2, period: auto}

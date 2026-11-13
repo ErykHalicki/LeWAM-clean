@@ -1,0 +1,79 @@
+name: generic_vit_predictor
+
+model:
+  model_dim: 192
+  depth: 6
+  num_heads: 16
+  dim_head: 64
+  mlp_ratio: 4.0
+  mlp_dim: 2048     # overrides mlp_ratio
+  dropout: 0.1
+  # not optional here, unlike the flow arms: `future_video` reads a head off
+  # `video_context`'s own tokens and targets the window one step later, so unmasked the
+  # token at index i would attend the encoded observation at i + 1 and read its own target
+  causal: true
+  rope:
+    time: {share: 0.75, period: auto}
+    seq: {share: 0.25, period: auto}
+
+encoders:
+  vit:
+    type: vit
+    pooling: cls
+    dim: 192
+    depth: 12
+    num_heads: 3
+    mlp_ratio: 4.0
+    patch_size: 14
+    img_size: 224
+    pixel_norm: imagenet
+  vit_mlp_with_bn:
+    type: mlp
+    input: vit
+    in_dim: 192
+    hidden_dim: 2048
+    out_dim: 192
+    norm: batch
+  output_mlp_with_bn:
+    type: mlp
+    in_dim: 192
+    hidden_dim: 2048
+    out_dim: 192
+    norm: batch
+  act_mlp:
+    type: mlp
+    in_dim: 10        # frameskip 5 x action_dim 2: the raw stacked block
+    hidden_dim: 768
+    out_dim: 192
+
+# the action block is a frameskip-5 stack, so the dataset must set `frameskip: 5` to serve it
+conditioning:
+  video_context:
+    from: observation.images.pixels
+    encoder: vit_mlp_with_bn
+    via: tokens
+    dim: 192
+    index: "-2..0"
+    grid: [1, 1]
+  action:
+    from: action
+    encoder: act_mlp
+    via: cond
+    dim: 192
+    index: "-2..0"
+
+predict:
+  future_video:
+    from: observation.images.pixels
+    encoder: vit_mlp_with_bn
+    type: direct
+    input: video_context
+    dim: 192
+    index: "-1..1"
+    grid: [1, 1]
+    decoder: output_mlp_with_bn
+
+losses:
+  - {type: prediction, stream: future_video, weight: 1.0}
+  - {type: sigreg, streams: [video_context, future_video], weight: 0.09,
+     statistic: per_timestep, concat: temporal}

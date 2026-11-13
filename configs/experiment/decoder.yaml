@@ -1,0 +1,21 @@
+defaults:
+  - base
+  - _self_
+
+tasks: [training, validation]
+
+encoder_init: null
+
+batch_size: auto
+effective_batch: 256
+max_steps: 8000
+num_workers: 8
+mixed_precision: bf16
+log_every: 10
+save_every: 500
+eval_every: 250
+
+optimizer:
+  name: adamw
+  lr: 2.0e-4
+  weight_decay: 1.0e-4

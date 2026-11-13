@@ -1,0 +1,16 @@
+# The video-only WAM sans future latent prediction: action chunk only, but the wam
+# arms' per-timestep sigreg applied to the visual CONTEXT latents -- isolates what the
+# regularizer alone contributes against the plain policy and video-only arms.
+defaults:
+  - flow_policy_pool_b601
+  - _self_
+
+losses:
+  - {type: flow, stream: action, weight: 1.0}
+  - {type: sigreg, weight: 0.1, statistic: per_timestep, concat: temporal,
+     streams: [scene_context]}
+  - {type: sigreg, weight: 0.1, statistic: per_timestep, concat: temporal,
+     streams: [wrist_context]}
+  # observed / eval only (weight 0.0), mirrors flow_common's integration terms
+  - {type: integration, stream: action, weight: 0.0, norm: mse}
+  - {type: integration, stream: action, weight: 0.0, norm: mse, units: raw}

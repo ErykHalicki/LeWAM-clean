@@ -1,0 +1,6 @@
+defaults:
+  - robocasa_base
+  - _self_
+
+tasks:
+  - "PickPlaceDrawerToCounter"

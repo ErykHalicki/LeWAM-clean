@@ -1,0 +1,24 @@
+# state: [base_pos(3), base_quat(4), ee_pos_rel(3), ee_quat_rel(4), gripper_qpos(2)]
+# action: [base_motion(4), control_mode(1), ee_pos(3), ee_rot(3), gripper(1)] in [-1, 1]
+scene_field: observation.images.robot0_agentview_left
+scene_right_field: observation.images.robot0_agentview_right
+wrist_field: observation.images.robot0_eye_in_hand
+state_fields: observation.state
+
+state_dim: 16
+action_dim: 12
+state_steps: 1
+state_raw_index: "0"
+
+action_fps: 20
+video_fps: 5            # tubelet rate: `context_raw_index` strides `action_fps`, paired
+context_raw_index: "-12, -8, -4, 0"
+future_raw_index: "4, 8, 12, 16, 20, 24"
+
+action_index: "0..23"
+action_history_index: "-24..-1"
+chunk_len: 24
+
+# must be a multiple of 8: the U-Net halves the time axis once per `down_dims` stage
+diffusion_horizon: 24
+diffusion_action_index: "0..23"

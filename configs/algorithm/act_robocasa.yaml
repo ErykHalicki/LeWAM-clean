@@ -1,0 +1,30 @@
+defaults:
+  - lerobot_policy_common
+  - dims_robocasa
+  - _self_
+
+policy:
+  type: act
+  chunk_size: ${algorithm.chunk_len}
+  n_action_steps: ${algorithm.chunk_len}
+  # ACT accepts no other n_obs_steps
+  n_obs_steps: 1
+  vision_backbone: resnet18
+  dim_model: 512
+  n_heads: 8
+  optimizer_lr: 1.0e-5
+  optimizer_lr_backbone: 1.0e-5
+
+conditioning:
+  observation.images.robot0_agentview_left:
+    index: "0"
+    fps: ${algorithm.action_fps}
+  observation.images.robot0_agentview_right:
+    index: "0"
+    fps: ${algorithm.action_fps}
+  observation.images.robot0_eye_in_hand:
+    index: "0"
+    fps: ${algorithm.action_fps}
+  observation.state:
+    index: "0"
+    fps: ${algorithm.action_fps}

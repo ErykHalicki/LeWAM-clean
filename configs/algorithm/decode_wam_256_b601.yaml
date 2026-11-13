@@ -1,0 +1,8 @@
+defaults:
+  - flow_wam_256_b601
+  - decode_wam_pred_common
+  - _self_
+
+encoders:
+  decode_scene: {in_dim: 256}
+  decode_wrist: {in_dim: 256}

@@ -1,0 +1,4 @@
+defaults:
+  - flow_wam_state_only_common
+  - dims_b601
+  - _self_

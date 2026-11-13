@@ -1,0 +1,30 @@
+defaults:
+  - lerobot_policy_common
+  - dims_b601
+  - _self_
+
+policy:
+  type: act
+  chunk_size: ${algorithm.chunk_len}
+  n_action_steps: ${algorithm.chunk_len}
+  # ACT accepts no other n_obs_steps
+  n_obs_steps: 1
+  vision_backbone: resnet18
+  # widened from the lerobot default (512) so this baseline sits in the same
+  # ~130M-param range as the LeWAM arms, rather than being undersized relative to them
+  dim_model: 1152
+  n_heads: 8
+  # the only lr lerobot puts in a param group, so the only one here that reaches the
+  # optimizer; everything else trains at `experiment.optimizer.lr`
+  optimizer_lr_backbone: 1.0e-5
+
+conditioning:
+  observation.images.zed_left:
+    index: "0"
+    fps: ${algorithm.action_fps}
+  observation.images.wrist_cam:
+    index: "0"
+    fps: ${algorithm.action_fps}
+  observation.state:
+    index: "0"
+    fps: ${algorithm.action_fps}

@@ -1,0 +1,11 @@
+defaults:
+  - record_schema
+  - cameras: zed
+  - _self_
+
+repo_id: ehalicki/b601_charger_pick_and_place_zed_only
+
+task: "Place the white charging block in the gray bin."
+repeat_task: true
+
+num_episodes: 100

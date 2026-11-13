@@ -1,0 +1,12 @@
+defaults:
+  - selfwam_frozen_b601
+  - _self_
+
+# A2A seeding on the video futures: x0 = the last context latent repeated across the
+# future steps, so v = 0 already yields persistence and the field only learns the
+# action-conditioned delta. No seed noise: the seed IS the deterministic context.
+predict:
+  scene_future:
+    source: {stream: scene_context, rows: "-1", fill: repeat_last}
+  wrist_future:
+    source: {stream: wrist_context, rows: "-1", fill: repeat_last}

@@ -1,0 +1,13 @@
+[submodule "external/vjepa2"]
+	path = external/vjepa2
+	url = https://github.com/facebookresearch/vjepa2
+[submodule "external/lerobot"]
+	path = external/lerobot
+	url = https://github.com/ErykHalicki/lerobot.git
+	branch = b601-dataset-robot-config
+[submodule "external/robocasa"]
+	path = external/robocasa
+	url = https://github.com/robocasa/robocasa.git
+[submodule "external/robosuite"]
+	path = external/robosuite
+	url = https://github.com/ARISE-Initiative/robosuite.git

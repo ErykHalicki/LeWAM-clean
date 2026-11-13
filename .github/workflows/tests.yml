@@ -1,0 +1,35 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Install swig  # build dep of stable-worldmodel[env]'s box2d
+        run: sudo apt-get update && sudo apt-get install -y swig
+
+      - name: Install dependencies
+        # the lerobot fork is installed from the submodule explicitly: `uv pip` does not
+        # honor [tool.uv.sources], so `.[lerobot]` alone would resolve upstream lerobot
+        # from PyPI, which lacks the fork's dataset API
+        run: >-
+          uv pip install --system -e ".[wandb,dev,swm,lerobot]"
+          -e "./external/lerobot[dataset]"
+          torch --extra-index-url https://download.pytorch.org/whl/cpu
+
+      - name: Run tests
+        run: python -m pytest tests/ -v

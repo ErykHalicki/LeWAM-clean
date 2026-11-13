@@ -1,0 +1,16 @@
+# @package _global_
+# fetch the episodes first: python -m lewam.scripts.fetch_robocasa_task <TaskName>
+defaults:
+  - override /dataset: robocasa_drawer_counter
+  - override /algorithm: diffusion_robocasa
+  - override /eval: robocasa
+
+# `max`: base.yaml defaults to `min`, which would keep this arm's WORST checkpoint
+best_metric: success_rate
+best_mode: max
+
+experiment:
+  eval_every: 3000
+
+subsample_streams:
+  "observation.images.*": {every: 2}

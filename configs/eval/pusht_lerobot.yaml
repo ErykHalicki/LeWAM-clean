@@ -1,0 +1,9 @@
+backend: swm
+env_name: swm/PushTFixedGoalAbsoluteAction-v1
+num_envs: 8
+image_shape: [96, 96]
+max_episode_steps: 400
+episodes: 20
+seed: 1000
+max_videos: 8
+video_dir: null

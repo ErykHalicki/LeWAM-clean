@@ -1,0 +1,9 @@
+defaults:
+  - selfwam_a2a_b601
+  - _self_
+
+# ViT-B from random init: how much of the arm's performance is the vjepa2.1 prior vs
+# the training signal itself
+encoders:
+  vjepa:
+    checkpoint: null

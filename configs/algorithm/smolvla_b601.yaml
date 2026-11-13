@@ -1,0 +1,26 @@
+defaults:
+  - lerobot_policy_common
+  - dims_b601
+  - _self_
+
+policy:
+  type: smolvla
+  chunk_size: ${algorithm.chunk_len}
+  n_action_steps: ${algorithm.chunk_len}
+  n_obs_steps: 1
+  # the released recipe: pretrained SmolVLM2 backbone (frozen vision, frozen LM),
+  # action expert trained from scratch. Both the VLM weights and its tokenizer come
+  # from the hub -- an offline worker needs them in its HF cache.
+  load_vlm_weights: true
+  # to finetune the released policy instead: pretrained_path: lerobot/smolvla_base
+
+conditioning:
+  observation.images.zed_left:
+    index: "0"
+    fps: ${algorithm.action_fps}
+  observation.images.wrist_cam:
+    index: "0"
+    fps: ${algorithm.action_fps}
+  observation.state:
+    index: "0"
+    fps: ${algorithm.action_fps}

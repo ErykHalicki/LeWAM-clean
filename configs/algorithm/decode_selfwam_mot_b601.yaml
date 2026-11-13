@@ -1,0 +1,4 @@
+defaults:
+  - selfwam_mot_b601
+  - decode_wam_pred_common
+  - _self_

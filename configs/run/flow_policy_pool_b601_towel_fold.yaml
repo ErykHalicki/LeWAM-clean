@@ -1,0 +1,22 @@
+# @package _global_
+defaults:
+  - override /dataset: b601_towel_fold
+  - override /algorithm: flow_policy_pool_b601
+  - override /eval: holdout
+
+# the integrated endpoint: `loss/action` scales with the arm's x0 seed and cannot rank
+# arms, and an unreported best_metric silently disables best-checkpointing
+best_metric: loss/int_action
+best_mode: min
+
+experiment:
+  eval_every: 200
+  max_steps: 20000
+  # unfrozen ViT-B backward through every context frame
+  gradient_checkpointing: true
+
+subsample_streams:
+  "observation.images.*": {every: 3}
+
+cache_encodings: null
+

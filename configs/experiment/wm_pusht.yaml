@@ -1,0 +1,17 @@
+defaults:
+  - base
+  - _self_
+
+batch_size: 512
+effective_batch: null
+max_steps: 10000
+num_workers: 4
+log_every: 10
+save_every: 500
+eval_every: 20000
+grad_clip: 1.0
+mixed_precision: bf16
+optimizer:
+  name: adamw
+  lr: 5.0e-5
+  weight_decay: 1.0e-3

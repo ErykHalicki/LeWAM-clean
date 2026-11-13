@@ -1,0 +1,33 @@
+# @package _global_
+defaults:
+  - override /dataset: b601_pnpt
+  - override /algorithm: vjepa2_ac_b601
+  - override /eval: holdout_cem
+
+# the CEM-planned chunk's error, the same quantity the LeWAM arms' int_action measures
+best_metric: loss/cem_action
+best_mode: min
+
+experiment:
+  eval_every: 200
+  max_steps: 20000
+  # 64 x 4 accumulation reaches the arms' effective batch of 256 without activation
+  # checkpointing, which cost a quarter of the step at batch 256
+  batch_size: 64
+  gradient_checkpointing: false
+
+subsample_streams:
+  "observation.images.*": {every: 3}
+
+cache_encodings:
+  augmentation_draws: 4
+  store_on: auto
+  disk_path: /tmp/lewam_enc_cache
+
+# the world model reads no state: the dataset refuses a slice or an augmentation on a
+# field nothing reads
+dataset:
+  slices: null
+  augment:
+    streams:
+      observation.state: null

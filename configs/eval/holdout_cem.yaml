@@ -1,0 +1,21 @@
+backend: holdout_cem
+dataset: ${dataset}
+batch_size: 32
+max_batches: 50
+num_workers: 4
+seed: 0
+
+# CEM-planned chunks scored against the held-out actions, on `plan_batches` batches of
+# `plan_batch_size` samples: each sample costs num_samples x n_steps x horizon predictor passes
+plan_batches: 1
+plan_batch_size: 16
+plan:
+  space: linear
+  num_samples: 128
+  n_steps: 20
+  topk: 16
+  init_std: 0.1
+  momentum_mean: 0.25
+  momentum_std: 0.75
+  clip: 3.0
+  chunk: 256

@@ -1,0 +1,14 @@
+defaults:
+  - selfwam_b601
+  - _self_
+
+# A2A with a STOP-GRADDED seed: x0 = last context latent (repeated), detached. The live
+# seed let an unfrozen encoder shrink the flow target by pulling context toward future
+# (temporal collapse; a pooled-sigreg counter had its own pathology).
+# Standard per_timestep sigreg is inherited -- one variable changed vs the known-good
+# frozen recipe.
+predict:
+  scene_future:
+    source: {stream: scene_context, rows: "-1", fill: repeat_last, detach: true}
+  wrist_future:
+    source: {stream: wrist_context, rows: "-1", fill: repeat_last, detach: true}

@@ -1,0 +1,32 @@
+backend: swm
+env_name: swm/PushT-v1
+num_envs: 50
+image_shape: [224, 224]
+max_episode_steps: 100
+episodes: 50
+seed: 1000
+max_videos: 8
+video_dir: null
+
+dataset_eval:
+  name: pusht_expert_train
+  # fetched from this HF repo on first use (46GB -- a subset works)
+  hf_repo: MinghaoFu/lewm-official-data
+  goal_offset: 25
+  eval_budget: 50
+
+cost:
+  type: encoded_goal
+  encoder: vit_mlp_with_bn   # goals must live in the projected stream space
+  goal_key: goal
+  stream: future_video
+
+plan:
+  horizon: 5            # model steps; horizon * action_block must equal goal_offset
+  receding_horizon: 5
+  action_block: 5       # must equal dataset.frameskip: blocks unroll to raw env actions
+  num_samples: 300
+  n_steps: 30
+  topk: 30
+  var_scale: 0.21       # RAW env units: ~1 sigma of expert actions
+  batch_size: 8         # CEM plans envs in chunks of this size; 50 x 300 at once OOMs

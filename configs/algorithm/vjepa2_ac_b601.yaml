@@ -1,0 +1,57 @@
+defaults:
+  - dims_b601
+  - _self_
+
+name: vjepa2_ac
+
+predictor:
+  dim: 768
+  depth: 12
+  heads: 12
+  drop_path: 0.0
+
+loss:
+  auto_steps: 2
+  normalize_reps: true
+
+encoders:
+  vjepa:
+    type: vjepa2
+    arch: vit_base
+    checkpoint: pretrained
+    crop_size: 256
+    frames_per_step: 1
+    per_frame: true
+    frozen: true
+
+# the action rows cover every transition between consecutive frames, context and future
+# alike: 4 transitions x 12 rows; the predictor's token for frame t is the 12x7 block
+# executed between frames t and t+1
+conditioning:
+  scene_context:
+    from: ${algorithm.scene_field}
+    encoder: vjepa
+    via: tokens
+    dim: 768
+    index: "-1..0"
+    raw_index: ${algorithm.context_raw_index}
+    fps: ${algorithm.video_fps}
+    grid: [16, 16]
+  action:
+    from: action
+    role: action
+    dim: 7
+    index: "-12..35"
+    fps: ${algorithm.action_fps}
+
+predict:
+  scene_future:
+    from: ${algorithm.scene_field}
+    encoder: vjepa
+    type: direct
+    input: scene_context
+    dim: 768
+    index: "1..3"
+    raw_index: ${algorithm.future_raw_index}
+    fps: ${algorithm.video_fps}
+    grid: [16, 16]

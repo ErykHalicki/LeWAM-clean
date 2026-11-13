@@ -1,0 +1,10 @@
+defaults:
+  - lerobot_base
+  - _self_
+
+repo_id: ehalicki/b601_charger_pick_and_place_zed_only
+
+normalize:
+  keys: [action, observation.state]
+  method: percentile
+  percentiles: [1, 99]

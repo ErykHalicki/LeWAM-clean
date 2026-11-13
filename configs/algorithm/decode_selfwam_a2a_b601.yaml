@@ -1,0 +1,4 @@
+defaults:
+  - selfwam_a2a_frozen_b601
+  - decode_wam_pred_common
+  - _self_

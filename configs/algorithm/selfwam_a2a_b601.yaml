@@ -1,0 +1,32 @@
+defaults:
+  - selfwam_b601
+  - _self_
+
+# A2A seeding on the video futures (see selfwam_a2a_frozen_b601): x0 = last context
+# latent repeated, no seed noise; the field learns only the action-conditioned delta
+predict:
+  scene_future:
+    source: {stream: scene_context, rows: "-1", fill: repeat_last}
+  wrist_future:
+    source: {stream: wrist_context, rows: "-1", fill: repeat_last}
+
+# pooled (not per_timestep) sigreg: one bag over every frame of the camera's window, so
+# temporal collapse -- frames duplicating each other -- is priced as sample dependence.
+# per_timestep is blind to it and this unfrozen arm flattened time under A2A
+# (train/var/scene/temporal 0.30 -> 0.007 by step 3400).
+losses:
+  - {type: flow, stream: action, weight: 1.0}
+  - {type: flow, stream: state_future, weight: 1.0}
+  - {type: flow, stream: scene_future, weight: 1.0}
+  - {type: flow, stream: wrist_future, weight: 1.0}
+  - {type: sigreg, weight: 0.1, statistic: pooled, concat: temporal,
+     streams: [scene_context, scene_future]}
+  - {type: sigreg, weight: 0.1, statistic: pooled, concat: temporal,
+     streams: [wrist_context, wrist_future]}
+  # observed / eval only (weight 0.0)
+  - {type: integration, stream: action, weight: 0.0, norm: mse}
+  - {type: integration, stream: state_future, weight: 0.0, norm: mse}
+  - {type: integration, stream: scene_future, weight: 0.0, norm: mse}
+  - {type: integration, stream: wrist_future, weight: 0.0, norm: mse}
+  - {type: integration, stream: action, weight: 0.0, norm: mse, units: raw}
+  - {type: integration, stream: state_future, weight: 0.0, norm: mse, units: raw}

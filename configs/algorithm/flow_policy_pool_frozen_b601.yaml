@@ -1,0 +1,7 @@
+defaults:
+  - flow_policy_pool_b601
+  - _self_
+
+encoders:
+  vjepa:
+    frozen: true

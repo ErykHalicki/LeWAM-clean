@@ -1,0 +1,6 @@
+# @package _global_
+defaults:
+  - override /experiment: wm_pusht
+  - override /dataset: pusht
+  - override /algorithm: vit_pusht_lewm
+  - override /eval: pusht_swm

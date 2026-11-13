@@ -1,0 +1,11 @@
+defaults:
+  - flow_policy_pool_frozen_b601
+  - _self_
+
+# ablation off the frozen 1-query default: true 2-frame tubelets with attention across
+# the 4-frame context window instead of one frame encoded on its own
+encoders:
+  vjepa:
+    per_frame: false
+    frames_per_step: 2
+context_raw_index: "-18, -12, -6, 0"

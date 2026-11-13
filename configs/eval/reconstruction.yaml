@@ -1,0 +1,12 @@
+backend: reconstruction
+dataset: ${dataset}
+
+batch_size: 32
+max_batches: 20
+num_workers: 4
+seed: 0              # fixes both the scored subset and the samples drawn for the panel
+panel_rows: 6
+
+# >1 adds a per-stream AR panel: that many consecutive windows, each conditioned on
+# the previous window's predictions
+ar_windows: 0

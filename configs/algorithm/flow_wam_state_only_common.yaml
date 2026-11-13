@@ -1,0 +1,27 @@
+defaults:
+  - flow_common
+  - _self_
+
+predict:
+  state_future:
+    from: ${algorithm.state_fields}
+    type: flow
+    dim: ${algorithm.state_dim}
+    index: "1..36"
+    fps: ${algorithm.action_fps}
+    block_size: 1
+    token_in:
+      type: mlp
+      mlp_dim: ${algorithm.model.model_dim}
+    token_out:
+      type: mlp
+      mlp_dim: 64
+
+losses:
+  - {type: flow, stream: action, weight: 1.0}
+  - {type: flow, stream: state_future, weight: 1.0}
+  # observed / eval only (weight 0.0)
+  - {type: integration, stream: action, weight: 0.0, norm: mse}
+  - {type: integration, stream: state_future, weight: 0.0, norm: mse}
+  - {type: integration, stream: action, weight: 0.0, norm: mse, units: raw}
+  - {type: integration, stream: state_future, weight: 0.0, norm: mse, units: raw}
