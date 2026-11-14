@@ -9,7 +9,7 @@ def save_checkpoint(model, optimizer, out_dir, step, save_intermittent=False, be
     """Save weights + optimizer + step to out_dir/model.pt. If a wandb run is active, also
     log it as a 'model' artifact so `resume=`/`load=<run id>` can fetch it later.
 
-    By default only the newest artifact version plus one backup stay on wandb (older
+    By default only the newest committed artifact version stays on wandb (older
     versions are pruned after each upload); `save_intermittent=True` keeps every version.
 
     `best=True` marks this as the best-scoring weights the run has produced: it writes

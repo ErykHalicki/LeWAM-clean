@@ -34,7 +34,7 @@ Successes out of 30 trials per task (Table 2 of the paper).
 Uses [`uv`](https://docs.astral.sh/uv/).
 
 ```bash
-git clone <repo-url> LeWAM
+git clone https://github.com/ErykHalicki/LeWAM-clean.git LeWAM
 cd LeWAM
 GIT_LFS_SKIP_SMUDGE=1 git submodule update --init --recursive
 uv venv
